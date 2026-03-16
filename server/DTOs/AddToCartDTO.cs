@@ -1,0 +1,9 @@
+namespace EBookNepal.DTOs
+{
+    public class AddToCartDTO
+    {
+        public string BookId { get; set; }
+        public int Quantity { get; set; }
+        public string? SellerId { get; set; }
+    }
+}
