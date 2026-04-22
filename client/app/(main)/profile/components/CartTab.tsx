@@ -43,8 +43,7 @@ interface CartTabProps {
 
 const getToken = () => localStorage.getItem("token")
 
-const fmt = (n: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n)
+const fmt = (n: number) => `Rs. ${n.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
 
 const formatDate = (d: string) =>
   new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })

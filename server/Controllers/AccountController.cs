@@ -267,6 +267,33 @@ namespace EBookNepal.Controllers
         }
 
         // ============================
+        // UPDATE USER ROLES
+        // ============================
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("update-user-roles/{userId}")]
+        public async Task<IActionResult> UpdateUserRoles(string userId, [FromBody] List<string> roles)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound(new { Message = "User not found." });
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+            
+            // Remove existing roles
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeResult.Succeeded)
+                return BadRequest(removeResult.Errors);
+
+            // Add new roles
+            var addResult = await _userManager.AddToRolesAsync(user, roles);
+            if (!addResult.Succeeded)
+                return BadRequest(addResult.Errors);
+
+            return Ok(new { Message = "Roles updated successfully." });
+        }
+
+        // ============================
         // CLOUDINARY HELPER
         // ============================
 

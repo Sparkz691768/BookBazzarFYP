@@ -58,7 +58,7 @@ namespace EBookNepal.Controllers
                 Name = registerDTO.FullName,
                 Address = registerDTO.Address,
                 ContactNo = registerDTO.ContactNo,
-                EmailConfirmed = false
+                EmailConfirmed = true
             };
 
             // Upload profile image
@@ -71,7 +71,13 @@ namespace EBookNepal.Controllers
             var result = await _userManager.CreateAsync(user, registerDTO.Password);
 
             if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogError("Identity Error: {Code} - {Description}", error.Code, error.Description);
+                }
                 return BadRequest(result.Errors);
+            }
 
             // Ensure default role exists
             if (!await _roleManager.RoleExistsAsync("User"))
@@ -88,15 +94,24 @@ namespace EBookNepal.Controllers
                 new { userId = user.Id, token },
                 Request.Scheme);
 
-            await _emailService.SendEmailAsync(
-                user.Email!,
-                "Confirm your email",
-                $"Click <a href='{confirmationLink}'>here</a> to confirm your email.");
-
-            return Ok(new
+            try 
             {
-                message = "Registration successful. Please verify your email."
-            });
+                await _emailService.SendEmailAsync(
+                    user.Email!,
+                    "Confirm your email",
+                    $"Click <a href='{confirmationLink}'>here</a> to confirm your email.");
+                
+                return Ok(new { message = "Registration successful. Please verify your email." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send confirmation email to {Email}", user.Email);
+                // Even if email fails, the user is created. For development, we allow them to continue.
+                return Ok(new { 
+                    message = "Registration successful, but we couldn't send a verification email. You may need to have an admin manually verify your account.",
+                    debug = "Email service error. Check server logs."
+                });
+            }
         }
 
         // ============================================================

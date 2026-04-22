@@ -32,7 +32,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="class">
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme="light" 
+          enableSystem={false}
+        >
           <Navbar />
           <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <TooltipProvider>

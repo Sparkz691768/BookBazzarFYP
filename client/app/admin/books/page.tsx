@@ -47,8 +47,7 @@ const formatDate = (dateString: string) =>
     year: "numeric", month: "short", day: "numeric",
   })
 
-const formatPrice = (price: number) =>
-  new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(price)
+const formatPrice = (price: number) => `Rs. ${price.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
 
 // ─── Component ────────────────────────────────────────────────────────────────
 

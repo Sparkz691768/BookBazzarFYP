@@ -495,7 +495,7 @@ export function OrderReceipt({ order, id }: OrderReceiptProps) {
             <div className="info-row">
               <span className="info-label">Total Amount:</span>
               <span className="info-value" style={{ color: "#6366f1" }}>
-                ${order.totalAmount.toFixed(2)}
+                Rs. {order.totalAmount.toFixed(2)}
               </span>
             </div>
           </div>
@@ -533,9 +533,9 @@ export function OrderReceipt({ order, id }: OrderReceiptProps) {
             {order.orderItems.map((item, index) => (
               <tr key={item.orderItemId || index}>
                 <td className="item-name">{item.bookTitle}</td>
-                <td>${item.bookPrice.toFixed(2)}</td>
+                <td>Rs. {item.bookPrice.toFixed(2)}</td>
                 <td>{item.quantity}</td>
-                <td className="item-price">${item.totalPrice.toFixed(2)}</td>
+                <td className="item-price">Rs. {item.totalPrice.toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
@@ -546,19 +546,19 @@ export function OrderReceipt({ order, id }: OrderReceiptProps) {
       <div className="summary-section">
         <div className="summary-row">
           <span className="summary-label">Subtotal</span>
-          <span className="summary-value">${order.totalAmount.toFixed(2)}</span>
+          <span className="summary-value">Rs. {order.totalAmount.toFixed(2)}</span>
         </div>
         <div className="summary-row">
           <span className="summary-label">Tax</span>
-          <span className="summary-value">$0.00</span>
+          <span className="summary-value">Rs. 0.00</span>
         </div>
         <div className="summary-row">
           <span className="summary-label">Shipping</span>
-          <span className="summary-value">$0.00</span>
+          <span className="summary-value">Rs. 0.00</span>
         </div>
         <div className="summary-total">
           <span className="summary-total-label">Total</span>
-          <span className="summary-total-value">${order.totalAmount.toFixed(2)}</span>
+          <span className="summary-total-value">Rs. {order.totalAmount.toFixed(2)}</span>
         </div>
       </div>
 

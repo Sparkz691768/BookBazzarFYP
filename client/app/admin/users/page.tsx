@@ -148,21 +148,27 @@ export default function UsersPage() {
     try {
       setIsDeleting(true)
       setDeletingId(userId)
-      const token = isAuthenticated() ? localStorage.getItem("token") : null
+      const token = localStorage.getItem("token")
 
-      // Uncomment and adapt for your real endpoint:
-      // const response = await fetch(`https://localhost:7265/delete-user/${userId}`, {
-      //   method: "DELETE",
-      //   headers: { accept: "*/*", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-      // })
-      // if (!response.ok) throw new Error(`Failed to delete: ${response.statusText}`)
+      const response = await fetch(`https://localhost:7265/delete-user/${userId}`, {
+        method: "DELETE",
+        headers: { 
+          accept: "*/*", 
+          ...(token ? { Authorization: `Bearer ${token}` } : {}) 
+        },
+      })
 
-      await new Promise((r) => setTimeout(r, 900)) // simulate
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || `Failed to delete: ${response.statusText}`)
+      }
 
       setUsers((prev) => prev.filter((u) => u.id !== userId))
       setFiltered((prev) => prev.filter((u) => u.id !== userId))
+      toast.success("User deleted successfully")
     } catch (err: any) {
       console.error("Error deleting user:", err)
+      toast.error(err.message || "Failed to delete user")
     } finally {
       setIsDeleting(false)
       setDeletingId(null)
@@ -186,21 +192,22 @@ export default function UsersPage() {
     if (!roleDialogUser) return
     try {
       setIsSavingRoles(true)
-      const token = isAuthenticated() ? localStorage.getItem("token") : null
+      const token = localStorage.getItem("token")
 
-      // Uncomment and adapt for your real endpoint:
-      // const response = await fetch(`https://localhost:7265/update-user-roles/${roleDialogUser.id}`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     accept: "*/*",
-      //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      //   },
-      //   body: JSON.stringify({ roles: selectedRoles }),
-      // })
-      // if (!response.ok) throw new Error(`Failed to update roles: ${response.statusText}`)
+      const response = await fetch(`https://localhost:7265/update-user-roles/${roleDialogUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "*/*",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(selectedRoles),
+      })
 
-      await new Promise((r) => setTimeout(r, 800)) // simulate
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.message || `Failed to update roles: ${response.statusText}`)
+      }
 
       // Update local state
       const updated = users.map((u) =>

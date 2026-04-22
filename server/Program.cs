@@ -184,4 +184,48 @@ async Task SeedRolesAsync(IServiceProvider serviceProvider)
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
+
+    // Seed Admin User
+    var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+    var adminEmail = "admin@gmail.com";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+    if (adminUser == null)
+    {
+        Console.WriteLine($"Seeding Admin User: {adminEmail}");
+        var newAdmin = new User
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            Name = "System Admin",
+            Address = "Admin Headquarter",
+            ContactNo = "9800000000",
+            EmailConfirmed = true,
+            CreatedDate = DateTime.UtcNow
+        };
+
+        var createResult = await userManager.CreateAsync(newAdmin, "Admin@123");
+        if (createResult.Succeeded)
+        {
+            await userManager.AddToRoleAsync(newAdmin, "Admin");
+            Console.WriteLine("Admin User seeded successfully.");
+        }
+        else
+        {
+            Console.WriteLine($"Error seeding Admin User: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+        }
+    }
+    else
+    {
+        // Ensure existing user has Admin role and confirmed email
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+        adminUser.EmailConfirmed = true;
+        
+        // RESET PASSWORD to Admin@123 for testing
+        var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+        await userManager.ResetPasswordAsync(adminUser, token, "Admin@123");
+        
+        await userManager.UpdateAsync(adminUser);
+        Console.WriteLine("Admin User already exists. Roles, confirmation, and PASSWORD verified.");
+    }
 }
