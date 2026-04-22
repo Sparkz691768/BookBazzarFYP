@@ -1,0 +1,32 @@
+# .NET Core
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docuser
+
+# Visual Studio Code
+.vscode/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docuser
+
+# Node.js
+node_modules/
+dist/
+.next/
+out/
+build/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# OS files
+.DS_Store
+Thumbs.db
